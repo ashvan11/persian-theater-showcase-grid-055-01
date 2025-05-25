@@ -1,9 +1,11 @@
 
-import { useState } from "react";
 import HeroSlider from "../components/HeroSlider";
-import TheaterGrid from "../components/TheaterGrid";
+import CategorySection from "../components/CategorySection";
+import { useInfiniteTheaters } from "../hooks/useInfiniteTheaters";
 
 const Index = () => {
+  const { categories, loadMoreForCategory } = useInfiniteTheaters();
+
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
@@ -32,16 +34,26 @@ const Index = () => {
       {/* Hero Slider */}
       <HeroSlider />
 
-      {/* Theater Categories Grid */}
-      <section className="py-16 px-4">
-        <div className="container mx-auto">
-          <div className="text-center mb-12">
+      {/* Categories with Infinity Scroll */}
+      <div className="py-16">
+        <div className="container mx-auto px-4 mb-12">
+          <div className="text-center">
             <h2 className="text-3xl font-bold text-foreground mb-4">دسته‌بندی نمایش‌ها</h2>
             <p className="text-foreground/70 text-lg">انواع نمایش‌های تئاتری را کشف کنید</p>
           </div>
-          <TheaterGrid />
         </div>
-      </section>
+        
+        {categories.map(category => (
+          <CategorySection
+            key={category.name}
+            categoryName={category.name}
+            theaters={category.theaters}
+            onLoadMore={() => loadMoreForCategory(category.name)}
+            hasMore={category.hasMore}
+            loading={category.loading}
+          />
+        ))}
+      </div>
 
       {/* Footer */}
       <footer className="bg-card border-t border-border/40 py-12">
