@@ -8,6 +8,11 @@ import Footer from "@/components/Footer";
 import CreateTheaterFormEnhanced from "@/components/CreateTheaterFormEnhanced";
 import CreateCrewFormEnhanced from "@/components/CreateCrewFormEnhanced";
 import CreateShowFormEnhanced from "@/components/CreateShowFormEnhanced";
+import CreateConcertFormEnhanced from "@/components/CreateConcertFormEnhanced";
+import CreateCafeFormEnhanced from "@/components/CreateCafeFormEnhanced";
+import CreateBannerFormEnhanced from "@/components/CreateBannerFormEnhanced";
+import CreateSMSFormEnhanced from "@/components/CreateSMSFormEnhanced";
+import CreateOtherFormEnhanced from "@/components/CreateOtherFormEnhanced";
 import { useAuth } from "@/contexts/AuthContext";
 import { Theater, Music, Clock, Fingerprint, Building, Utensils, Square, Mail } from "lucide-react";
 
@@ -131,6 +136,16 @@ const CreateNew = () => {
         return <CreateCrewFormEnhanced />;
       case "show":
         return <CreateShowFormEnhanced />;
+      case "concert":
+        return <CreateConcertFormEnhanced />;
+      case "cafe":
+        return <CreateCafeFormEnhanced />;
+      case "banner":
+        return <CreateBannerFormEnhanced />;
+      case "sms":
+        return <CreateSMSFormEnhanced />;
+      case "other":
+        return <CreateOtherFormEnhanced />;
       default:
         return (
           <Card>
