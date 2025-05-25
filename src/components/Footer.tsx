@@ -1,5 +1,5 @@
 
-import { MapPin, Phone, Mail, Instagram, Telegram } from "lucide-react";
+import { MapPin, Phone, Mail, Instagram, MessageCircle } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 
 const Footer = () => {
@@ -25,7 +25,7 @@ const Footer = () => {
                 <Instagram className="w-5 h-5" />
               </a>
               <a href="#" className="text-foreground/60 hover:text-gold-500 transition-colors">
-                <Telegram className="w-5 h-5" />
+                <MessageCircle className="w-5 h-5" />
               </a>
             </div>
           </div>
