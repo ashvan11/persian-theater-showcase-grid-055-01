@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -6,9 +5,9 @@ import { Card, CardContent, CardDescription, CardTitle } from "@/components/ui/c
 import { Button } from "@/components/ui/button";
 import ExpandableHeader from "@/components/ExpandableHeader";
 import Footer from "@/components/Footer";
-import CreateTheaterForm from "@/components/CreateTheaterForm";
-import CreateCrewForm from "@/components/CreateCrewForm";
-import CreateShowForm from "@/components/CreateShowForm";
+import CreateTheaterFormEnhanced from "@/components/CreateTheaterFormEnhanced";
+import CreateCrewFormEnhanced from "@/components/CreateCrewFormEnhanced";
+import CreateShowFormEnhanced from "@/components/CreateShowFormEnhanced";
 import { useAuth } from "@/contexts/AuthContext";
 import { Theater, Music, Clock, Fingerprint, Building, Utensils, Square, Mail } from "lucide-react";
 
@@ -127,11 +126,11 @@ const CreateNew = () => {
   const renderForm = () => {
     switch (selectedForm) {
       case "theater":
-        return <CreateTheaterForm />;
+        return <CreateTheaterFormEnhanced />;
       case "crew":
-        return <CreateCrewForm />;
+        return <CreateCrewFormEnhanced />;
       case "show":
-        return <CreateShowForm />;
+        return <CreateShowFormEnhanced />;
       default:
         return (
           <Card>

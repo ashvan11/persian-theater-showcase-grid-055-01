@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import CategorySection from "../components/CategorySection";
 import ExpandableHeader from "../components/ExpandableHeader";
@@ -6,7 +5,7 @@ import Footer from "../components/Footer";
 import { useShows } from "@/hooks/useShows";
 
 interface TheaterItem {
-  id: string;
+  id: string; // Changed from number to string to match database
   title: string;
   subtitle: string;
   image: string;
@@ -30,7 +29,7 @@ const Index = () => {
       
       // Transform shows data to match TheaterItem interface
       const transformedShows: TheaterItem[] = shows.map((show) => ({
-        id: show.id,
+        id: show.id, // Now string matches string
         title: show.title,
         subtitle: show.theaters?.name || "نمایش تئاتر",
         image: show.poster_url || `https://picsum.photos/id/${Math.floor(Math.random() * 100) + 1}/300/200`,

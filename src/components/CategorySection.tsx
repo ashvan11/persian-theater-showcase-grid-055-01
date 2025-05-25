@@ -3,7 +3,7 @@ import { useState, useEffect, useCallback } from "react";
 import TheaterCard from "./TheaterCard";
 
 interface TheaterItem {
-  id: number;
+  id: string; // Changed from number to string
   title: string;
   subtitle: string;
   image: string;
