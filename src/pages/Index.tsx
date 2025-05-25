@@ -35,8 +35,13 @@ const Index = () => {
       {/* Hero Slider */}
       <HeroSlider />
 
+      {/* Filter Section - Between Slider and Categories */}
+      <div className="container mx-auto px-4 py-8">
+        <FilterSection onFilterChange={handleFilterChange} />
+      </div>
+
       {/* Categories with Infinity Scroll */}
-      <div className="py-16">
+      <div className="py-8">
         <div className="container mx-auto px-4 mb-12">
           <div className="text-center">
             <h2 className="text-3xl font-bold text-foreground mb-4">دسته‌بندی نمایش‌ها</h2>
@@ -50,11 +55,6 @@ const Index = () => {
               </Link>
             </div>
           </div>
-        </div>
-
-        {/* Filter Section */}
-        <div className="container mx-auto px-4">
-          <FilterSection onFilterChange={handleFilterChange} />
         </div>
         
         {categories.map(category => (
