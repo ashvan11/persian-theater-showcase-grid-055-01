@@ -3,7 +3,7 @@ import TheaterCard from "./TheaterCard";
 
 const theaterCategories = [
   {
-    id: 1,
+    id: "1", // Changed from number to string
     title: "کتابخانه نیمه شب",
     subtitle: "نمایش کتابخانه نیمه شب",
     image: "https://images.unsplash.com/photo-1605810230434-7631ac76ec81?w=400&h=300&fit=crop",
@@ -15,7 +15,7 @@ const theaterCategories = [
     buttonText: "خرید بلیت"
   },
   {
-    id: 2,
+    id: "2", // Changed from number to string
     title: "نمایش مجهول",
     subtitle: "نمایش مجهول",
     image: "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=400&h=300&fit=crop",
@@ -27,7 +27,7 @@ const theaterCategories = [
     buttonText: "خرید بلیت"
   },
   {
-    id: 3,
+    id: "3", // Changed from number to string
     title: "نمایش ناامیدی",
     subtitle: "نمایش ناامیدی",
     image: "https://images.unsplash.com/photo-1470813740244-df37b8c1edcb?w=400&h=300&fit=crop",
@@ -39,7 +39,7 @@ const theaterCategories = [
     buttonText: "خرید بلیت"
   },
   {
-    id: 4,
+    id: "4", // Changed from number to string
     title: "نمایش ملکه‌ها",
     subtitle: "نمایش ملکه‌ها",
     image: "https://images.unsplash.com/photo-1466442929976-97f336a657be?w=400&h=300&fit=crop",
@@ -51,7 +51,7 @@ const theaterCategories = [
     buttonText: "خرید بلیت"
   },
   {
-    id: 5,
+    id: "5", // Changed from number to string
     title: "نمایش مقاومت خودکشی",
     subtitle: "نمایش مقاومت خودکشی",
     image: "https://images.unsplash.com/photo-1492321936769-b49830bc1d1e?w=400&h=300&fit=crop",
@@ -63,7 +63,7 @@ const theaterCategories = [
     buttonText: "خرید بلیت"
   },
   {
-    id: 6,
+    id: "6", // Changed from number to string
     title: "اینترنت زندگی میل کیچ",
     subtitle: "نمایش اینترنت زندگی میل کیچ",
     image: "https://images.unsplash.com/photo-1605810230434-7631ac76ec81?w=400&h=300&fit=crop",
