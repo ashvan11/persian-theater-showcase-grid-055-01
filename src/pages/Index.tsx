@@ -1,6 +1,7 @@
 
 import HeroSlider from "../components/HeroSlider";
 import CategorySection from "../components/CategorySection";
+import ExpandableHeader from "../components/ExpandableHeader";
 import { useInfiniteTheaters } from "../hooks/useInfiniteTheaters";
 
 const Index = () => {
@@ -8,28 +9,8 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Header */}
-      <header className="relative z-50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b border-border/40">
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-8">
-              <h1 className="text-2xl font-bold text-gold-500">تئاتر نما</h1>
-              <nav className="hidden md:flex items-center gap-6">
-                <a href="#" className="text-foreground/80 hover:text-gold-500 transition-colors">خانه</a>
-                <a href="#" className="text-foreground/80 hover:text-gold-500 transition-colors">نمایش‌ها</a>
-                <a href="#" className="text-foreground/80 hover:text-gold-500 transition-colors">تالارها</a>
-                <a href="#" className="text-foreground/80 hover:text-gold-500 transition-colors">اخبار</a>
-                <a href="#" className="text-foreground/80 hover:text-gold-500 transition-colors">تماس</a>
-              </nav>
-            </div>
-            <div className="flex items-center gap-4">
-              <button className="px-4 py-2 bg-gold-600 text-background rounded-lg hover:bg-gold-700 transition-colors">
-                ورود / ثبت نام
-              </button>
-            </div>
-          </div>
-        </div>
-      </header>
+      {/* Expandable Header */}
+      <ExpandableHeader />
 
       {/* Hero Slider */}
       <HeroSlider />
