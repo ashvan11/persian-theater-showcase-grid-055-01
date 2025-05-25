@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 
 interface TheaterCategory {
-  id: number;
+  id: string; // Changed from number to string to match database
   title: string;
   subtitle: string;
   image: string;
