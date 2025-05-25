@@ -1,33 +1,54 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardDescription, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import ExpandableHeader from "@/components/ExpandableHeader";
 import Footer from "@/components/Footer";
+import CreateTheaterForm from "@/components/CreateTheaterForm";
+import CreateCrewForm from "@/components/CreateCrewForm";
+import CreateShowForm from "@/components/CreateShowForm";
+import { useAuth } from "@/contexts/AuthContext";
 import { Theater, Music, Clock, Fingerprint, Building, Utensils, Square, Mail } from "lucide-react";
 
 const CreateNew = () => {
   const [activeTab, setActiveTab] = useState("create");
+  const [selectedForm, setSelectedForm] = useState<string | null>(null);
+  const { user } = useAuth();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!user) {
+      navigate("/auth");
+    }
+  }, [user, navigate]);
+
+  if (!user) {
+    return null;
+  }
 
   const createCards = [
     {
       title: "نمایش",
       description: "یک اجرای نمایش، نمایش موزیکال، محیطی ...",
       icon: Theater,
-      category: "برگه"
+      category: "برگه",
+      form: "show"
     },
     {
       title: "کنسرت", 
       description: "یک اجرای موسیقی",
       icon: Music,
-      category: "برگه"
+      category: "برگه",
+      form: "concert"
     },
     {
       title: "دیگر انواع",
       description: "یک برگه رویداد یا محصول از هر نوع دیگری...",
       icon: Clock,
-      category: "برگه"
+      category: "برگه",
+      form: "other"
     }
   ];
 
@@ -36,19 +57,22 @@ const CreateNew = () => {
       title: "شخصیت حقیقی",
       description: "یک هنرمند، فعال پشت صحنه، نویسنده ...",
       icon: Fingerprint,
-      category: "کانال"
+      category: "کانال",
+      form: "crew"
     },
     {
       title: "سازمان یا برند",
       description: "یک گروه هنری، برند، شرکت، سالن ...",
       icon: Building,
-      category: "کانال"
+      category: "کانال",
+      form: "theater"
     },
     {
       title: "محل غذا و نوشیدنی",
       description: "یک محل خوراک و نوشیدنی، مانند کافه و رستوران",
       icon: Utensils,
-      category: "کانال"
+      category: "کانال",
+      form: "cafe"
     }
   ];
 
@@ -57,19 +81,20 @@ const CreateNew = () => {
       title: "بنر",
       description: "بنر تبلیغاتی برای بیشتر دیده شدن",
       icon: Square,
-      category: "تبلیغ"
+      category: "تبلیغ",
+      form: "banner"
     },
     {
       title: "پیامک",
       description: "فرستادن پیامک هدفمند برای آگاهی‌رسانی بیشتر",
       icon: Mail,
-      category: "تبلیغ"
+      category: "تبلیغ",
+      form: "sms"
     }
   ];
 
-  const handleCardClick = (title: string) => {
-    console.log(`Creating new: ${title}`);
-    // Handle navigation to creation form
+  const handleCardClick = (form: string) => {
+    setSelectedForm(form);
   };
 
   const renderCards = (cards: any[]) => (
@@ -80,7 +105,7 @@ const CreateNew = () => {
           <Card 
             key={index} 
             className="cursor-pointer hover:shadow-lg transition-shadow border-border/50 hover:border-gold-500/50"
-            onClick={() => handleCardClick(card.title)}
+            onClick={() => handleCardClick(card.form)}
           >
             <CardContent className="p-6 text-center">
               <div className="flex justify-center mb-4">
@@ -98,6 +123,57 @@ const CreateNew = () => {
       })}
     </div>
   );
+
+  const renderForm = () => {
+    switch (selectedForm) {
+      case "theater":
+        return <CreateTheaterForm />;
+      case "crew":
+        return <CreateCrewForm />;
+      case "show":
+        return <CreateShowForm />;
+      default:
+        return (
+          <Card>
+            <CardContent className="p-6 text-center">
+              <p className="text-muted-foreground">این فرم هنوز در دسترس نیست.</p>
+              <Button 
+                variant="outline" 
+                onClick={() => setSelectedForm(null)}
+                className="mt-4"
+              >
+                بازگشت
+              </Button>
+            </CardContent>
+          </Card>
+        );
+    }
+  };
+
+  if (selectedForm) {
+    return (
+      <div className="min-h-screen bg-background">
+        <ExpandableHeader />
+        
+        <div className="container mx-auto px-4 py-8">
+          <div className="max-w-4xl mx-auto">
+            <div className="mb-6">
+              <Button 
+                variant="outline" 
+                onClick={() => setSelectedForm(null)}
+                className="mb-4"
+              >
+                ← بازگشت
+              </Button>
+            </div>
+            {renderForm()}
+          </div>
+        </div>
+
+        <Footer />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background">
