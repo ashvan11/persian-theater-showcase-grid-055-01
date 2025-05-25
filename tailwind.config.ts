@@ -20,7 +20,8 @@ export default {
 		},
 		extend: {
 			fontFamily: {
-				sans: ['Vazirmatn', 'sans-serif'],
+				'vazir': ['Vazirmatn', 'sans-serif'],
+				'shabnam': ['Shabnam', 'sans-serif'],
 			},
 			colors: {
 				border: 'hsl(var(--border))',
@@ -65,6 +66,18 @@ export default {
 					'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
+				},
+				gold: {
+					50: '#fefdf6',
+					100: '#fefaeb',
+					200: '#fcf4d0',
+					300: '#f9eaa8',
+					400: '#f5dc7e',
+					500: '#f0ca5e',
+					600: '#d4a942',
+					700: '#b18a37',
+					800: '#8f6d35',
+					900: '#765931',
 				}
 			},
 			borderRadius: {
@@ -98,12 +111,21 @@ export default {
 						opacity: '1',
 						transform: 'translateY(0)'
 					}
+				},
+				'slide-in-right': {
+					'0%': {
+						transform: 'translateX(100%)'
+					},
+					'100%': {
+						transform: 'translateX(0)'
+					}
 				}
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
 				'accordion-up': 'accordion-up 0.2s ease-out',
-				'fade-in': 'fade-in 0.6s ease-out'
+				'fade-in': 'fade-in 0.6s ease-out',
+				'slide-in-right': 'slide-in-right 0.3s ease-out'
 			}
 		}
 	},

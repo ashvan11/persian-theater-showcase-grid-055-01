@@ -1,108 +1,90 @@
 
-import { useState } from 'react';
+import { useState } from "react";
 
-interface TheaterShow {
+interface TheaterCategory {
   id: number;
   title: string;
-  category: string;
-  description: string;
-  fullDescription: string;
-  rating: string;
-  duration: string;
-  date: string;
-  location: string;
-  price: string;
+  subtitle: string;
   image: string;
-  director: string;
-  cast: string;
+  rating: string;
+  shows: string;
+  description: string;
+  time: string;
+  price: string;
+  buttonText: string;
 }
 
 interface TheaterCardProps {
-  show: TheaterShow;
+  category: TheaterCategory;
+  delay?: number;
 }
 
-const TheaterCard = ({ show }: TheaterCardProps) => {
+const TheaterCard = ({ category, delay = 0 }: TheaterCardProps) => {
   const [isHovered, setIsHovered] = useState(false);
 
   return (
     <div
-      className="group bg-white/5 backdrop-blur-sm rounded-2xl overflow-hidden border border-white/10 hover:border-yellow-400/30 transition-all duration-500 cursor-pointer"
+      className="theater-card group cursor-pointer"
+      style={{ animationDelay: `${delay}ms` }}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      <div className="relative overflow-hidden">
-        <div
-          className={`${show.image} transition-all duration-700 ease-out ${
-            isHovered ? 'h-32' : 'h-48'
-          } flex items-center justify-center relative`}
-        >
-          <div className="absolute inset-0 bg-black/30" />
-          <div className="relative z-10 text-center">
-            <div className="inline-flex items-center gap-2 bg-black/50 backdrop-blur-sm px-3 py-1 rounded-full mb-2">
-              <span className="text-yellow-400 text-sm">⭐</span>
-              <span className="text-white text-sm">{show.rating}</span>
-            </div>
-            <span className="bg-yellow-400/20 text-yellow-400 px-3 py-1 rounded-full text-sm font-medium">
-              {show.category}
-            </span>
-          </div>
+      {/* Image Section */}
+      <div className={`theater-card-image overflow-hidden ${isHovered ? 'h-32' : 'h-48'}`}>
+        <img
+          src={category.image}
+          alt={category.title}
+          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+        
+        {/* Rating Badge */}
+        <div className="absolute top-3 right-3 bg-black/70 text-gold-400 px-2 py-1 rounded-md text-sm font-semibold flex items-center gap-1">
+          <span>★</span>
+          <span>{category.rating}</span>
+        </div>
+        
+        {/* Shows Count */}
+        <div className="absolute top-3 left-3 bg-black/70 text-white px-2 py-1 rounded-md text-sm">
+          {category.shows} نمایش
         </div>
       </div>
 
-      <div className="p-6">
-        <h3 className="text-xl font-bold text-white mb-2 group-hover:text-yellow-400 transition-colors duration-300">
-          {show.title}
+      {/* Content Section */}
+      <div className={`theater-card-content p-4 ${isHovered ? 'flex-1' : ''}`}>
+        <h3 className="font-bold text-lg text-foreground mb-1 line-clamp-1">
+          {category.title}
         </h3>
-
-        <p className={`text-white/70 text-sm leading-relaxed transition-all duration-500 ${
+        <p className="text-gold-500 text-sm mb-3">
+          {category.subtitle}
+        </p>
+        
+        {/* Description - Always visible but expands on hover */}
+        <p className={`text-foreground/70 text-sm leading-relaxed mb-4 ${
           isHovered ? 'line-clamp-none' : 'line-clamp-2'
         }`}>
-          {isHovered ? show.fullDescription : show.description}
+          {category.description}
         </p>
 
-        <div className={`transition-all duration-500 overflow-hidden ${
-          isHovered ? 'max-h-96 opacity-100 mt-4' : 'max-h-0 opacity-0'
-        }`}>
-          <div className="space-y-3 pt-4 border-t border-white/10">
-            <div className="flex items-center justify-between text-sm">
-              <span className="text-white/60">کارگردان:</span>
-              <span className="text-white">{show.director}</span>
-            </div>
-            
-            <div className="flex items-center justify-between text-sm">
-              <span className="text-white/60">بازیگران:</span>
-              <span className="text-white text-right">{show.cast}</span>
-            </div>
-            
-            <div className="flex items-center justify-between text-sm">
-              <span className="text-white/60">مدت زمان:</span>
-              <span className="text-white">{show.duration}</span>
-            </div>
-            
-            <div className="flex items-center justify-between text-sm">
-              <span className="text-white/60">تاریخ:</span>
-              <span className="text-white">{show.date}</span>
-            </div>
-            
-            <div className="flex items-center justify-between text-sm">
-              <span className="text-white/60">مکان:</span>
-              <span className="text-white text-right">{show.location}</span>
-            </div>
-            
-            <div className="flex items-center justify-between">
-              <span className="text-white/60 text-sm">قیمت:</span>
-              <span className="text-yellow-400 font-bold">{show.price}</span>
-            </div>
-          </div>
+        {/* Show Time */}
+        <div className="flex items-center gap-2 text-foreground/60 text-sm mb-3">
+          <span>🕐</span>
+          <span>{category.time}</span>
         </div>
 
-        <div className={`transition-all duration-300 ${
-          isHovered ? 'mt-4' : 'mt-6'
+        {/* Price Info */}
+        {isHovered && (
+          <div className="text-foreground/60 text-sm mb-4 animate-fade-in">
+            {category.price}
+          </div>
+        )}
+
+        {/* Action Button */}
+        <button className={`w-full bg-gold-600 hover:bg-gold-700 text-black font-semibold py-2 px-4 rounded-lg transition-all duration-300 ${
+          isHovered ? 'opacity-100 translate-y-0' : 'opacity-90'
         }`}>
-          <button className="w-full bg-gradient-to-r from-yellow-400 to-orange-500 text-black py-3 rounded-lg font-bold hover:scale-105 transition-transform duration-300">
-            مشاهده جزئیات و خرید بلیط
-          </button>
-        </div>
+          {category.buttonText}
+        </button>
       </div>
     </div>
   );

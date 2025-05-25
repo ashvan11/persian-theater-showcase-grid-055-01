@@ -1,117 +1,92 @@
 
-import TheaterCard from './TheaterCard';
+import TheaterCard from "./TheaterCard";
+
+const theaterCategories = [
+  {
+    id: 1,
+    title: "کتابخانه نیمه شب",
+    subtitle: "نمایش کتابخانه نیمه شب",
+    image: "https://images.unsplash.com/photo-1605810230434-7631ac76ec81?w=400&h=300&fit=crop",
+    rating: "4.5",
+    shows: "244",
+    description: "نمایشی کتابخانه‌ای که در آن قهرمان داستان میان مرگ و زندگی تعلیق یافته است و باید انتخاب کند.",
+    time: "ساعت 19 در 3 سانس و 53'",
+    price: "خرید 53' ساعت و 3 سانس تئاتر در",
+    buttonText: "خرید بلیت"
+  },
+  {
+    id: 2,
+    title: "نمایش مجهول",
+    subtitle: "نمایش مجهول",
+    image: "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=400&h=300&fit=crop",
+    rating: "4.2",
+    shows: "398",
+    description: "داستانی پیچیده و مرموز که تماشاگران را به تفکر عمیق درباره هویت و معنای زندگی دعوت می‌کند.",
+    time: "ساعت 20 در 2 سانس و 45'",
+    price: "خرید 45' ساعت و 2 سانس تئاتر در",
+    buttonText: "خرید بلیت"
+  },
+  {
+    id: 3,
+    title: "نمایش ناامیدی",
+    subtitle: "نمایش ناامیدی",
+    image: "https://images.unsplash.com/photo-1470813740244-df37b8c1edcb?w=400&h=300&fit=crop",
+    rating: "4.6",
+    shows: "201",
+    description: "نمایشی دراماتیک که به بررسی عمق احساسات انسانی و مبارزه با چالش‌های زندگی می‌پردازد.",
+    time: "ساعت 18 در 4 سانس و 30'",
+    price: "خرید 30' ساعت و 4 سانس تئاتر در",
+    buttonText: "خرید بلیت"
+  },
+  {
+    id: 4,
+    title: "نمایش ملکه‌ها",
+    subtitle: "نمایش ملکه‌ها",
+    image: "https://images.unsplash.com/photo-1466442929976-97f336a657be?w=400&h=300&fit=crop",
+    rating: "4.8",
+    shows: "172",
+    description: "داستان زنان قدرتمند تاریخ که با شجاعت و حکمت خود مسیر تمدن‌ها را تغییر دادند.",
+    time: "ساعت 19:30 در 3 سانس و 60'",
+    price: "خرید 60' ساعت و 3 سانس تئاتر در",
+    buttonText: "خرید بلیت"
+  },
+  {
+    id: 5,
+    title: "نمایش مقاومت خودکشی",
+    subtitle: "نمایش مقاومت خودکشی",
+    image: "https://images.unsplash.com/photo-1492321936769-b49830bc1d1e?w=400&h=300&fit=crop",
+    rating: "4.1",
+    shows: "398",
+    description: "نمایشی قدرتمند که به موضوع حساس سلامت روان و اهمیت حمایت اجتماعی می‌پردازد.",
+    time: "ساعت 21 در 2 سانس و 55'",
+    price: "خرید 55' ساعت و 2 سانس تئاتر در",
+    buttonText: "خرید بلیت"
+  },
+  {
+    id: 6,
+    title: "اینترنت زندگی میل کیچ",
+    subtitle: "نمایش اینترنت زندگی میل کیچ",
+    image: "https://images.unsplash.com/photo-1605810230434-7631ac76ec81?w=400&h=300&fit=crop",
+    rating: "3.8",
+    shows: "173",
+    description: "نگاهی انتقادی به تأثیرات فناوری مدرن بر زندگی روزمره و روابط انسانی در عصر دیجیتال.",
+    time: "ساعت 20:30 در 3 سانس و 40'",
+    price: "خرید 40' ساعت و 3 سانس تئاتر در",
+    buttonText: "خرید بلیت"
+  }
+];
 
 const TheaterGrid = () => {
-  const theaterShows = [
-    {
-      id: 1,
-      title: "کتابخانه نیمه شب",
-      category: "درام",
-      description: "نمایشی تماشایی با تکنیک‌های آوانگارد که داستان عاشقانه‌ای میان کتاب‌ها را روایت می‌کند و در فضایی مه‌آلود میان مرگ و زندگی جریان دارد.",
-      fullDescription: "این نمایش با الهام از آثار ادبیات کلاسیک فارسی و ترکیب آن با تکنیک‌های مدرن تئاتر، داستانی عاشقانه و پر از رمز و راز را روایت می‌کند. در این اثر، کتابخانه‌ای شبانه تبدیل به صحنه‌ای می‌شود که در آن شخصیت‌ها با گذشته‌ها و رویاهایشان روبرو می‌شوند.",
-      rating: "۴.۵",
-      duration: "۲ ساعت و ۳۰ دقیقه",
-      date: "۱۸ تا ۲۷ فروردین",
-      location: "تماشاخانه مگنت",
-      price: "۱۵۰,۰۰۰ تومان",
-      image: "bg-gradient-to-br from-blue-600 to-purple-800",
-      director: "احمد رضایی",
-      cast: "سارا محمدی، علی کریمی"
-    },
-    {
-      id: 2,
-      title: "نمایش مجردین",
-      category: "کمدی",
-      description: "کمدی طنز اجتماعی که با نگاهی انتقادی و در عین حال طنزآمیز به مسائل اجتماعی معاصر می‌پردازد.",
-      fullDescription: "نمایشی کمدی که با طنزی هوشمندانه به بررسی روابط اجتماعی و چالش‌های زندگی مدرن می‌پردازد. این اثر با ترکیب طنز و نقد اجتماعی، آینه‌ای است که جامعه را در آن می‌بیند.",
-      rating: "۴.۲",
-      duration: "۱ ساعت و ۴۵ دقیقه",
-      date: "۲۰ تا ۲۸ فروردین",
-      location: "سالن کوچک تئاتر شهر",
-      price: "۱۲۰,۰۰۰ تومان",
-      image: "bg-gradient-to-br from-green-600 to-teal-800",
-      director: "مریم احمدی",
-      cast: "حسین نوری، فاطمه زاده"
-    },
-    {
-      id: 3,
-      title: "ناپیداستابیلیتی",
-      category: "تجربی",
-      description: "نمایش تجربی مدرن که مرزهای سنتی تئاتر را درهم می‌شکند و با زبان بصری نوین داستان می‌گوید.",
-      fullDescription: "اثری پیشرو که با استفاده از تکنولوژی‌های نوین، نور و صدا، مفاهیم فلسفی عمیقی را به صورت بصری و احساسی منتقل می‌کند. این نمایش مرزهای معمول میان تماشاگر و نمایش را از بین می‌برد.",
-      rating: "۴.۳",
-      duration: "۲ ساعت",
-      date: "۲۲ فروردین تا ۱ اردیبهشت",
-      location: "فضای نمایش آزاد",
-      price: "۱۸۰,۰۰۰ تومان",
-      image: "bg-gradient-to-br from-pink-600 to-red-800",
-      director: "رضا موسوی",
-      cast: "نگار امینی، محمد صادقی"
-    },
-    {
-      id: 4,
-      title: "ملکس",
-      category: "کلاسیک",
-      description: "بازنمایی مدرن از یکی از شاهکارهای ادبیات کلاسیک که با اجرای استادانه به روی صحنه می‌آید.",
-      fullDescription: "این نمایش با الهام از متون کلاسیک ادبیات فارسی، داستانی حماسی و عاشقانه را با زبان امروزی بازگو می‌کند. ترکیب موسیقی سنتی و مدرن، این اثر را به تجربه‌ای فراموش‌نشدنی تبدیل کرده است.",
-      rating: "۴.۷",
-      duration: "۳ ساعت",
-      date: "۲۵ فروردین تا ۱۰ اردیبهشت",
-      location: "تالار وحدت",
-      price: "۲۵۰,۰۰۰ تومان",
-      image: "bg-gradient-to-br from-yellow-600 to-orange-800",
-      director: "استاد کاظم نوری",
-      cast: "مهران مدیری، لیلا حاتمی"
-    },
-    {
-      id: 5,
-      title: "این زندگی میل کجه؟",
-      category: "درام اجتماعی",
-      description: "نمایشی تأثیرگذار که با نگاهی عمیق به مسائل اجتماعی معاصر، سؤالات اساسی زندگی را مطرح می‌کند.",
-      fullDescription: "این اثر با بررسی دقیق مسائل اجتماعی و روانی جامعه امروز، تماشاگران را به تأمل در زندگی و انتخاب‌هایشان وا می‌دارد. نمایشی که با عمق احساسی بالا، قلب تماشاگران را لمس می‌کند.",
-      rating: "۴.۶",
-      duration: "۲ ساعت و ۱۵ دقیقه",
-      date: "۳۰ فروردین تا ۱۵ اردیبهشت",
-      location: "سالن اصلی تئاتر شهر",
-      price: "۲۰۰,۰۰۰ تومان",
-      image: "bg-gradient-to-br from-indigo-600 to-purple-800",
-      director: "نرگس آبیار",
-      cast: "پژمان جمشیدی، ترانه علیدوستی"
-    },
-    {
-      id: 6,
-      title: "مشاره خودکشی",
-      category: "روانشناختی",
-      description: "نمایش روانشناختی پیچیده که با لایه‌های مختلف داستان، ذهن تماشاگر را درگیر می‌کند.",
-      fullDescription: "اثری تاریک و پیچیده که با بررسی عمیق روان انسان، مخاطب را با سؤالات بنیادین درباره معنای زندگی روبرو می‌کند. این نمایش با استفاده از تکنیک‌های روانشناختی مدرن، تجربه‌ای متفاوت ارائه می‌دهد.",
-      rating: "۴.۴",
-      duration: "۱ ساعت و ۵۰ دقیقه",
-      date: "۵ تا ۲۰ اردیبهشت",
-      location: "تئاتر صبا",
-      price: "۱۷۰,۰۰۰ تومان",
-      image: "bg-gradient-to-br from-gray-700 to-slate-900",
-      director: "کیوان علی‌زاده",
-      cast: "شهاب حسینی، هدیه تهرانی"
-    }
-  ];
-
   return (
-    <section className="container mx-auto px-6 py-16">
-      <div className="text-center mb-12">
-        <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
-          نمایش‌های <span className="text-yellow-400">در حال اجرا</span>
-        </h2>
-        <p className="text-xl text-white/70 max-w-2xl mx-auto">
-          بهترین نمایش‌های تئاتر تهران را انتخاب کنید و تجربه‌ای فراموش‌نشدنی داشته باشید
-        </p>
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        {theaterShows.map((show) => (
-          <TheaterCard key={show.id} show={show} />
-        ))}
-      </div>
-    </section>
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {theaterCategories.map((category, index) => (
+        <TheaterCard
+          key={category.id}
+          category={category}
+          delay={index * 100}
+        />
+      ))}
+    </div>
   );
 };
 
