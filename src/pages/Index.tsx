@@ -3,6 +3,7 @@ import HeroSlider from "../components/HeroSlider";
 import CategorySection from "../components/CategorySection";
 import ExpandableHeader from "../components/ExpandableHeader";
 import { useInfiniteTheaters } from "../hooks/useInfiniteTheaters";
+import { Link } from "react-router-dom";
 
 const Index = () => {
   const { categories, loadMoreForCategory } = useInfiniteTheaters();
@@ -21,6 +22,14 @@ const Index = () => {
           <div className="text-center">
             <h2 className="text-3xl font-bold text-foreground mb-4">دسته‌بندی نمایش‌ها</h2>
             <p className="text-foreground/70 text-lg">انواع نمایش‌های تئاتری را کشف کنید</p>
+            <div className="mt-4">
+              <Link 
+                to="/show/1" 
+                className="inline-block px-6 py-3 bg-gold-600 text-background rounded-lg hover:bg-gold-700 transition-colors"
+              >
+                مشاهده نمونه صفحه جزئیات نمایش
+              </Link>
+            </div>
           </div>
         </div>
         
