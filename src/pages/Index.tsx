@@ -1,10 +1,12 @@
-import { useState, useEffect, useCallback } from "react";
+
+import { useState, useEffect } from "react";
 import CategorySection from "../components/CategorySection";
 import ExpandableHeader from "../components/ExpandableHeader";
 import Footer from "../components/Footer";
+import { useShows } from "@/hooks/useShows";
 
 interface TheaterItem {
-  id: number;
+  id: string;
   title: string;
   subtitle: string;
   image: string;
@@ -17,104 +19,69 @@ interface TheaterItem {
 }
 
 const Index = () => {
+  const { data: shows, isLoading } = useShows();
   const [classicTheaters, setClassicTheaters] = useState<TheaterItem[]>([]);
   const [modernTheaters, setModernTheaters] = useState<TheaterItem[]>([]);
   const [childTheaters, setChildTheaters] = useState<TheaterItem[]>([]);
-  const [classicPage, setClassicPage] = useState(1);
-  const [modernPage, setModernPage] = useState(1);
-  const [childPage, setChildPage] = useState(1);
-  const [hasMoreClassic, setHasMoreClassic] = useState(true);
-  const [hasMoreModern, setHasMoreModern] = useState(true);
-  const [hasMoreChild, setHasMoreChild] = useState(true);
-  const [loadingClassic, setLoadingClassic] = useState(false);
-  const [loadingModern, setLoadingModern] = useState(false);
-  const [loadingChild, setLoadingChild] = useState(false);
-
-  const itemsPerPage = 6;
 
   useEffect(() => {
-    loadClassicTheaters();
-    loadModernTheaters();
-    loadChildTheaters();
-  }, []);
-
-  const generateTheaterData = (category: string, page: number): TheaterItem[] => {
-    const startIndex = (page - 1) * itemsPerPage;
-    const endIndex = startIndex + itemsPerPage;
-    const data: TheaterItem[] = [];
-
-    for (let i = startIndex; i < endIndex; i++) {
-      const id = i + 1;
-      data.push({
-        id: id,
-        title: `${category} Show ${id}`,
-        subtitle: "توضیحات کوتاه",
-        image: `https://picsum.photos/id/${id + 100}/300/200`,
-        rating: `${(Math.random() * 5).toFixed(1)}`,
-        shows: `${Math.floor(Math.random() * 30)}`,
-        description: "این یک توضیح تستی است",
-        time: `${Math.floor(Math.random() * 12) + 10}:00`,
-        price: `${Math.floor(Math.random() * 50) + 50} هزار تومان`,
+    if (shows) {
+      console.log('Loaded shows:', shows);
+      
+      // Transform shows data to match TheaterItem interface
+      const transformedShows: TheaterItem[] = shows.map((show) => ({
+        id: show.id,
+        title: show.title,
+        subtitle: show.theaters?.name || "نمایش تئاتر",
+        image: show.poster_url || `https://picsum.photos/id/${Math.floor(Math.random() * 100) + 1}/300/200`,
+        rating: "4.5", // You can calculate this from reviews later
+        shows: "1", // Number of showtimes - you can count this from showtimes
+        description: show.description || "توضیحات نمایش در دسترس نیست",
+        time: show.duration ? `${show.duration} دقیقه` : "120 دقیقه",
+        price: show.price ? `${Number(show.price).toLocaleString()} تومان` : "قیمت در دسترس نیست",
         buttonText: "خرید بلیت",
-      });
+      }));
+
+      // Categorize shows based on genre or other criteria
+      const classic = transformedShows.filter(show => 
+        shows.find(s => s.id === show.id)?.genre?.includes('کلاسیک') || 
+        shows.find(s => s.id === show.id)?.genre?.includes('تراژدی')
+      );
+      
+      const modern = transformedShows.filter(show => 
+        shows.find(s => s.id === show.id)?.genre?.includes('مدرن') || 
+        shows.find(s => s.id === show.id)?.genre?.includes('درام')
+      );
+      
+      const child = transformedShows.filter(show => 
+        shows.find(s => s.id === show.id)?.genre?.includes('کودک') ||
+        shows.find(s => s.id === show.id)?.age_rating === 'کودک'
+      );
+
+      // If no specific categorization, distribute shows evenly
+      if (classic.length === 0 && modern.length === 0 && child.length === 0) {
+        const thirdLength = Math.ceil(transformedShows.length / 3);
+        setClassicTheaters(transformedShows.slice(0, thirdLength));
+        setModernTheaters(transformedShows.slice(thirdLength, thirdLength * 2));
+        setChildTheaters(transformedShows.slice(thirdLength * 2));
+      } else {
+        setClassicTheaters(classic);
+        setModernTheaters(modern);
+        setChildTheaters(child);
+      }
     }
+  }, [shows]);
 
-    return data;
-  };
-
-  const loadClassicTheaters = async () => {
-    if (loadingClassic) return;
-    setLoadingClassic(true);
-    
-    const newData = generateTheaterData("نمایش‌های کلاسیک", classicPage);
-    
-    setClassicTheaters((prevTheaters) => [...prevTheaters, ...newData]);
-    setHasMoreClassic(newData.length === itemsPerPage);
-    setLoadingClassic(false);
-  };
-
-  const loadModernTheaters = async () => {
-    if (loadingModern) return;
-    setLoadingModern(true);
-
-    const newData = generateTheaterData("نمایش‌های مدرن", modernPage);
-
-    setModernTheaters((prevTheaters) => [...prevTheaters, ...newData]);
-    setHasMoreModern(newData.length === itemsPerPage);
-    setLoadingModern(false);
-  };
-
-  const loadChildTheaters = async () => {
-    if (loadingChild) return;
-    setLoadingChild(true);
-
-    const newData = generateTheaterData("نمایش‌های کودک", childPage);
-
-    setChildTheaters((prevTheaters) => [...prevTheaters, ...newData]);
-    setHasMoreChild(newData.length === itemsPerPage);
-    setLoadingChild(false);
-  };
-
-  const onLoadMoreClassic = () => {
-    if (hasMoreClassic && !loadingClassic) {
-      setClassicPage((prevPage) => prevPage + 1);
-      loadClassicTheaters();
-    }
-  };
-
-  const onLoadMoreModern = () => {
-    if (hasMoreModern && !loadingModern) {
-      setModernPage((prevPage) => prevPage + 1);
-      loadModernTheaters();
-    }
-  };
-
-  const onLoadMoreChild = () => {
-    if (hasMoreChild && !loadingChild) {
-      setChildPage((prevPage) => prevPage + 1);
-      loadChildTheaters();
-    }
-  };
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-gold-500 mx-auto"></div>
+          <p className="mt-4 text-foreground">در حال بارگذاری نمایش‌ها...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background">
@@ -140,23 +107,23 @@ const Index = () => {
         <CategorySection
           categoryName="نمایش‌های کلاسیک"
           theaters={classicTheaters}
-          onLoadMore={onLoadMoreClassic}
-          hasMore={hasMoreClassic}
-          loading={loadingClassic}
+          onLoadMore={() => {}}
+          hasMore={false}
+          loading={false}
         />
         <CategorySection
           categoryName="نمایش‌های مدرن"
           theaters={modernTheaters}
-          onLoadMore={onLoadMoreModern}
-          hasMore={hasMoreModern}
-          loading={loadingModern}
+          onLoadMore={() => {}}
+          hasMore={false}
+          loading={false}
         />
         <CategorySection
           categoryName="نمایش‌های کودک"
           theaters={childTheaters}
-          onLoadMore={onLoadMoreChild}
-          hasMore={hasMoreChild}
-          loading={loadingChild}
+          onLoadMore={() => {}}
+          hasMore={false}
+          loading={false}
         />
       </main>
       <Footer />

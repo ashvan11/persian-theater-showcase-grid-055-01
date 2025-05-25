@@ -6,115 +6,53 @@ import { Calendar, Clock, MapPin, Star, Users, Award } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import Footer from "../components/Footer";
-
-interface CrewMember {
-  id: string;
-  name: string;
-  role: string;
-  avatar: string;
-  isVerified: boolean;
-}
-
-interface Show {
-  id: string;
-  title: string;
-  description: string;
-  imageUrl: string;
-  venue: string;
-  dates: string;
-  duration: string;
-  price: number;
-  director: string;
-  genre: string;
-  ageRating: string;
-  cast: CrewMember[];
-  crew: CrewMember[];
-  relatedShows: Array<{
-    id: string;
-    title: string;
-    imageUrl: string;
-    price: number;
-  }>;
-}
+import { useShowById } from "@/hooks/useShows";
+import { useReviewsByShow } from "@/hooks/useReviews";
+import { useShowtimesByShow } from "@/hooks/useShowtimes";
 
 const ShowDetails = () => {
   const { id } = useParams();
   const [activeTab, setActiveTab] = useState("description");
+  
+  const { data: show, isLoading: showLoading } = useShowById(id || "");
+  const { data: reviews } = useReviewsByShow(id || "");
+  const { data: showtimes } = useShowtimesByShow(id || "");
 
-  // Mock comprehensive show data
-  const show: Show = {
-    id: id || "1",
-    title: "هملت",
-    description: "یکی از شاهکارهای ویلیام شکسپیر که داستان شاهزاده دانمارک را روایت می‌کند. این نمایش تراژیک که به زبان فارسی اجرا می‌شود، مسائل عمیق انسانی مانند انتقام، عشق، و جستجوی حقیقت را بررسی می‌کند. کارگردانی احمد محمدی با بازی درخشان بازیگران مطرح تئاتر ایران این اثر کلاسیک را به صورت مدرن و جذاب ارائه می‌دهد.",
-    imageUrl: "https://images.unsplash.com/photo-1507924538820-ede94a04019d?w=800&h=400&fit=crop",
-    venue: "تالار شهر - سالن اصلی",
-    dates: "15 دی الی 25 دی 1403",
-    duration: "120 دقیقه",
-    price: 150000,
-    director: "احمد محمدی",
-    genre: "تراژدی",
-    ageRating: "12+",
-    cast: [
-      {
-        id: "1",
-        name: "علی احمدی",
-        role: "هملت",
-        avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=face",
-        isVerified: true
-      },
-      {
-        id: "2", 
-        name: "فاطمه رضایی",
-        role: "اوفلیا",
-        avatar: "https://images.unsplash.com/photo-1494790108755-2616b612b3c8?w=100&h=100&fit=crop&crop=face",
-        isVerified: true
-      },
-      {
-        id: "3",
-        name: "محمد کریمی",
-        role: "کلاودیوس",
-        avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop&crop=face",
-        isVerified: false
-      }
-    ],
-    crew: [
-      {
-        id: "1",
-        name: "احمد محمدی",
-        role: "کارگردان",
-        avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=face",
-        isVerified: true
-      },
-      {
-        id: "4",
-        name: "مریم صادقی",
-        role: "طراح صحنه",
-        avatar: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&h=100&fit=crop&crop=face",
-        isVerified: true
-      },
-      {
-        id: "5",
-        name: "رضا موسوی",
-        role: "طراح نور",
-        avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop&crop=face",
-        isVerified: false
-      }
-    ],
-    relatedShows: [
-      { 
-        id: "2", 
-        title: "مرگ فروشنده", 
-        imageUrl: "https://images.unsplash.com/photo-1503095396549-807759245b35?w=300&h=200&fit=crop",
-        price: 120000
-      },
-      { 
-        id: "3", 
-        title: "شب دوازدهم", 
-        imageUrl: "https://images.unsplash.com/photo-1507924538820-ede94a04019d?w=300&h=200&fit=crop",
-        price: 140000
-      },
-    ],
-  };
+  if (showLoading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-gold-500 mx-auto"></div>
+          <p className="mt-4 text-foreground">در حال بارگذاری اطلاعات نمایش...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!show) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center">
+          <h1 className="text-2xl font-bold text-foreground mb-4">نمایش یافت نشد</h1>
+          <Link to="/" className="text-gold-500 hover:underline">بازگشت به صفحه اصلی</Link>
+        </div>
+      </div>
+    );
+  }
+
+  // Calculate average rating
+  const averageRating = reviews && reviews.length > 0 
+    ? (reviews.reduce((sum, review) => sum + (review.rating || 0), 0) / reviews.length).toFixed(1)
+    : "0.0";
+
+  // Separate cast and crew
+  const cast = show.show_crew?.filter(member => 
+    ['بازیگر', 'نقش اصلی', 'نقش فرعی'].includes(member.role_in_show)
+  ) || [];
+  
+  const crew = show.show_crew?.filter(member => 
+    !['بازیگر', 'نقش اصلی', 'نقش فرعی'].includes(member.role_in_show)
+  ) || [];
 
   return (
     <div className="min-h-screen bg-background">
@@ -124,7 +62,7 @@ const ShowDetails = () => {
       <div className="relative h-80 bg-gradient-to-r from-purple-900 to-blue-900">
         <div className="absolute inset-0 bg-black/50"></div>
         <img 
-          src={show.imageUrl}
+          src={show.poster_url || "https://images.unsplash.com/photo-1507924538820-ede94a04019d?w=800&h=400&fit=crop"}
           alt={show.title}
           className="w-full h-full object-cover"
         />
@@ -132,12 +70,16 @@ const ShowDetails = () => {
           <div className="text-center text-white">
             <h1 className="text-5xl font-bold mb-4">{show.title}</h1>
             <div className="flex items-center justify-center gap-4 text-lg">
-              <Badge variant="secondary" className="bg-white/20 text-white">
-                {show.genre}
-              </Badge>
-              <Badge variant="secondary" className="bg-white/20 text-white">
-                {show.ageRating}
-              </Badge>
+              {show.genre && (
+                <Badge variant="secondary" className="bg-white/20 text-white">
+                  {show.genre}
+                </Badge>
+              )}
+              {show.age_rating && (
+                <Badge variant="secondary" className="bg-white/20 text-white">
+                  {show.age_rating}
+                </Badge>
+              )}
             </div>
           </div>
         </div>
@@ -160,28 +102,37 @@ const ShowDetails = () => {
             <Calendar className="w-5 h-5 text-gold-500" />
             <div>
               <p className="text-sm text-foreground/60">تاریخ اجرا</p>
-              <p className="font-semibold">{show.dates}</p>
+              <p className="font-semibold">
+                {show.start_date && show.end_date 
+                  ? `${new Date(show.start_date).toLocaleDateString('fa-IR')} الی ${new Date(show.end_date).toLocaleDateString('fa-IR')}`
+                  : "تاریخ مشخص نشده"
+                }
+              </p>
             </div>
           </div>
           <div className="flex items-center gap-2">
             <Clock className="w-5 h-5 text-gold-500" />
             <div>
               <p className="text-sm text-foreground/60">مدت زمان</p>
-              <p className="font-semibold">{show.duration}</p>
+              <p className="font-semibold">{show.duration ? `${show.duration} دقیقه` : "مشخص نشده"}</p>
             </div>
           </div>
           <div className="flex items-center gap-2">
             <MapPin className="w-5 h-5 text-gold-500" />
             <div>
               <p className="text-sm text-foreground/60">مکان</p>
-              <p className="font-semibold">{show.venue}</p>
+              <p className="font-semibold">{show.theaters?.name || "نامشخص"}</p>
             </div>
           </div>
           <div className="flex items-center gap-2">
             <Users className="w-5 h-5 text-gold-500" />
             <div>
               <p className="text-sm text-foreground/60">کارگردان</p>
-              <p className="font-semibold">{show.director}</p>
+              <p className="font-semibold">
+                {crew.find(member => member.role_in_show === 'کارگردان')?.crew_members?.stage_name || 
+                 crew.find(member => member.role_in_show === 'کارگردان')?.crew_members?.profiles?.first_name || 
+                 "نامشخص"}
+              </p>
             </div>
           </div>
         </div>
@@ -229,17 +180,17 @@ const ShowDetails = () => {
               <div className="bg-card rounded-lg p-6">
                 <h3 className="text-lg font-bold mb-4">درباره نمایش</h3>
                 <p className="text-foreground/80 leading-relaxed mb-6">
-                  {show.description}
+                  {show.description || "توضیحات این نمایش در دسترس نیست."}
                 </p>
                 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <p className="text-sm text-foreground/60">ژانر</p>
-                    <p className="font-semibold">{show.genre}</p>
+                    <p className="font-semibold">{show.genre || "نامشخص"}</p>
                   </div>
                   <div>
                     <p className="text-sm text-foreground/60">رده سنی</p>
-                    <p className="font-semibold">{show.ageRating}</p>
+                    <p className="font-semibold">{show.age_rating || "نامشخص"}</p>
                   </div>
                 </div>
               </div>
@@ -248,56 +199,68 @@ const ShowDetails = () => {
             {activeTab === "cast" && (
               <div className="space-y-6">
                 {/* Cast Section */}
-                <div className="bg-card rounded-lg p-6">
-                  <h3 className="text-lg font-bold mb-4">بازیگران</h3>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {show.cast.map((member) => (
-                      <Link
-                        key={member.id}
-                        to={`/crew/${member.id}`}
-                        className="flex items-center gap-3 p-3 rounded-lg hover:bg-background transition-colors"
-                      >
-                        <Avatar className="w-12 h-12">
-                          <AvatarImage src={member.avatar} alt={member.name} />
-                          <AvatarFallback>{member.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
-                        </Avatar>
-                        <div className="flex-1">
-                          <p className="font-semibold flex items-center gap-1">
-                            {member.name}
-                            {member.isVerified && <Award className="w-4 h-4 text-gold-500" />}
-                          </p>
-                          <p className="text-sm text-foreground/60">{member.role}</p>
-                        </div>
-                      </Link>
-                    ))}
+                {cast.length > 0 && (
+                  <div className="bg-card rounded-lg p-6">
+                    <h3 className="text-lg font-bold mb-4">بازیگران</h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {cast.map((member) => (
+                        <Link
+                          key={member.crew_members?.id}
+                          to={`/crew/${member.crew_members?.id}`}
+                          className="flex items-center gap-3 p-3 rounded-lg hover:bg-background transition-colors"
+                        >
+                          <Avatar className="w-12 h-12">
+                            <AvatarImage src={member.crew_members?.profiles?.avatar_url} alt={member.crew_members?.stage_name} />
+                            <AvatarFallback>
+                              {member.crew_members?.stage_name?.charAt(0) || 
+                               member.crew_members?.profiles?.first_name?.charAt(0) || 'U'}
+                            </AvatarFallback>
+                          </Avatar>
+                          <div className="flex-1">
+                            <p className="font-semibold flex items-center gap-1">
+                              {member.crew_members?.stage_name || 
+                               `${member.crew_members?.profiles?.first_name} ${member.crew_members?.profiles?.last_name}`}
+                              {member.crew_members?.profiles?.is_verified && <Award className="w-4 h-4 text-gold-500" />}
+                            </p>
+                            <p className="text-sm text-foreground/60">{member.role_in_show}</p>
+                          </div>
+                        </Link>
+                      ))}
+                    </div>
                   </div>
-                </div>
+                )}
 
                 {/* Crew Section */}
-                <div className="bg-card rounded-lg p-6">
-                  <h3 className="text-lg font-bold mb-4">عوامل</h3>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {show.crew.map((member) => (
-                      <Link
-                        key={member.id}
-                        to={`/crew/${member.id}`}
-                        className="flex items-center gap-3 p-3 rounded-lg hover:bg-background transition-colors"
-                      >
-                        <Avatar className="w-12 h-12">
-                          <AvatarImage src={member.avatar} alt={member.name} />
-                          <AvatarFallback>{member.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
-                        </Avatar>
-                        <div className="flex-1">
-                          <p className="font-semibold flex items-center gap-1">
-                            {member.name}
-                            {member.isVerified && <Award className="w-4 h-4 text-gold-500" />}
-                          </p>
-                          <p className="text-sm text-foreground/60">{member.role}</p>
-                        </div>
-                      </Link>
-                    ))}
+                {crew.length > 0 && (
+                  <div className="bg-card rounded-lg p-6">
+                    <h3 className="text-lg font-bold mb-4">عوامل</h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {crew.map((member) => (
+                        <Link
+                          key={member.crew_members?.id}
+                          to={`/crew/${member.crew_members?.id}`}
+                          className="flex items-center gap-3 p-3 rounded-lg hover:bg-background transition-colors"
+                        >
+                          <Avatar className="w-12 h-12">
+                            <AvatarImage src={member.crew_members?.profiles?.avatar_url} alt={member.crew_members?.stage_name} />
+                            <AvatarFallback>
+                              {member.crew_members?.stage_name?.charAt(0) || 
+                               member.crew_members?.profiles?.first_name?.charAt(0) || 'U'}
+                            </AvatarFallback>
+                          </Avatar>
+                          <div className="flex-1">
+                            <p className="font-semibold flex items-center gap-1">
+                              {member.crew_members?.stage_name || 
+                               `${member.crew_members?.profiles?.first_name} ${member.crew_members?.profiles?.last_name}`}
+                              {member.crew_members?.profiles?.is_verified && <Award className="w-4 h-4 text-gold-500" />}
+                            </p>
+                            <p className="text-sm text-foreground/60">{member.role_in_show}</p>
+                          </div>
+                        </Link>
+                      ))}
+                    </div>
                   </div>
-                </div>
+                )}
               </div>
             )}
 
@@ -308,16 +271,54 @@ const ShowDetails = () => {
                   <div className="flex items-center gap-2 mb-4">
                     <div className="flex items-center gap-1">
                       {[1,2,3,4,5].map((star) => (
-                        <Star key={star} className="w-5 h-5 fill-gold-500 text-gold-500" />
+                        <Star key={star} className={`w-5 h-5 ${
+                          star <= Math.round(Number(averageRating)) 
+                            ? 'fill-gold-500 text-gold-500' 
+                            : 'text-gray-300'
+                        }`} />
                       ))}
                     </div>
-                    <span className="text-lg font-semibold">4.8</span>
-                    <span className="text-foreground/60">(127 نظر)</span>
+                    <span className="text-lg font-semibold">{averageRating}</span>
+                    <span className="text-foreground/60">({reviews?.length || 0} نظر)</span>
                   </div>
                   
-                  <p className="text-foreground/70">
-                    نظرات و امتیازات تماشاگران پس از اجرای نمایش در این قسمت نمایش داده خواهد شد.
-                  </p>
+                  {reviews && reviews.length > 0 ? (
+                    <div className="space-y-4">
+                      {reviews.slice(0, 5).map((review) => (
+                        <div key={review.id} className="border-b border-border/20 pb-4">
+                          <div className="flex items-center gap-2 mb-2">
+                            <Avatar className="w-8 h-8">
+                              <AvatarImage src={review.profiles?.avatar_url} />
+                              <AvatarFallback>
+                                {review.profiles?.first_name?.charAt(0) || 'U'}
+                              </AvatarFallback>
+                            </Avatar>
+                            <div>
+                              <p className="font-medium">
+                                {review.profiles?.first_name} {review.profiles?.last_name}
+                              </p>
+                              <div className="flex items-center gap-1">
+                                {[1,2,3,4,5].map((star) => (
+                                  <Star key={star} className={`w-3 h-3 ${
+                                    star <= (review.rating || 0) 
+                                      ? 'fill-gold-500 text-gold-500' 
+                                      : 'text-gray-300'
+                                  }`} />
+                                ))}
+                              </div>
+                            </div>
+                          </div>
+                          {review.comment && (
+                            <p className="text-foreground/70 text-sm">{review.comment}</p>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <p className="text-foreground/70">
+                      هنوز نظری برای این نمایش ثبت نشده است.
+                    </p>
+                  )}
                 </div>
               </div>
             )}
@@ -332,43 +333,23 @@ const ShowDetails = () => {
               <div className="space-y-4 mb-6">
                 <div className="flex items-center justify-between">
                   <span>قیمت:</span>
-                  <span className="font-bold text-lg">{show.price.toLocaleString()} تومان</span>
+                  <span className="font-bold text-lg">
+                    {show.price ? `${Number(show.price).toLocaleString()} تومان` : "نامشخص"}
+                  </span>
                 </div>
-                <div className="text-sm text-foreground/60">
-                  سانس‌های موجود: شنبه تا چهارشنبه - ساعت 19:00
-                </div>
+                {showtimes && showtimes.length > 0 && (
+                  <div className="text-sm text-foreground/60">
+                    سانس‌های موجود: {showtimes.length} سانس
+                  </div>
+                )}
               </div>
 
               <Link 
                 to={`/book/${id}`}
                 className="w-full bg-gold-600 hover:bg-gold-700 text-background font-semibold py-3 px-4 rounded-lg transition-colors block text-center"
               >
-                خرید بلیت
+                خرید بلیط
               </Link>
-            </div>
-
-            {/* Related Shows */}
-            <div className="bg-card rounded-lg p-6">
-              <h3 className="text-lg font-bold mb-4">نمایش‌های مرتبط</h3>
-              <div className="space-y-4">
-                {show.relatedShows.map((relatedShow) => (
-                  <Link 
-                    to={`/show/${relatedShow.id}`} 
-                    key={relatedShow.id} 
-                    className="flex items-center gap-4 p-3 rounded-lg hover:bg-background transition-colors"
-                  >
-                    <img
-                      src={relatedShow.imageUrl}
-                      alt={relatedShow.title}
-                      className="w-16 h-12 object-cover rounded-md"
-                    />
-                    <div className="flex-1">
-                      <h4 className="font-semibold text-foreground">{relatedShow.title}</h4>
-                      <p className="text-sm text-foreground/60">{relatedShow.price.toLocaleString()} تومان</p>
-                    </div>
-                  </Link>
-                ))}
-              </div>
             </div>
           </div>
         </div>
