@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { Search } from "lucide-react";
 import { Input } from "./ui/input";
+import { Link } from "react-router-dom";
 
 const ExpandableHeader = () => {
   const [isExpanded, setIsExpanded] = useState(false);
@@ -17,11 +18,12 @@ const ExpandableHeader = () => {
       <div className="container mx-auto px-4 py-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-8">
-            <h1 className="text-2xl font-bold text-gold-500">تئاتر نما</h1>
+            <Link to="/" className="text-2xl font-bold text-gold-500">تئاتر نما</Link>
             <nav className="hidden md:flex items-center gap-6">
-              <a href="#" className="text-foreground/80 hover:text-gold-500 transition-colors">خانه</a>
+              <Link to="/" className="text-foreground/80 hover:text-gold-500 transition-colors">خانه</Link>
               <a href="#" className="text-foreground/80 hover:text-gold-500 transition-colors">نمایش‌ها</a>
               <a href="#" className="text-foreground/80 hover:text-gold-500 transition-colors">تالارها</a>
+              <Link to="/wall" className="text-foreground/80 hover:text-gold-500 transition-colors">دیوار بحث</Link>
             </nav>
           </div>
           
@@ -94,7 +96,7 @@ const ExpandableHeader = () => {
                   <li><a href="#" className="text-foreground/70 hover:text-gold-500 transition-colors block py-1">نمایش‌های محبوب</a></li>
                   <li><a href="#" className="text-foreground/70 hover:text-gold-500 transition-colors block py-1">تخفیف‌ها</a></li>
                   <li><a href="#" className="text-foreground/70 hover:text-gold-500 transition-colors block py-1">اخبار تئاتر</a></li>
-                  <li><a href="#" className="text-foreground/70 hover:text-gold-500 transition-colors block py-1">تماس با ما</a></li>
+                  <li><Link to="/wall" className="text-foreground/70 hover:text-gold-500 transition-colors block py-1">دیوار بحث</Link></li>
                 </ul>
               </div>
             </div>

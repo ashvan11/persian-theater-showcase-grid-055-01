@@ -1,12 +1,31 @@
 
+import { useState } from "react";
 import HeroSlider from "../components/HeroSlider";
 import CategorySection from "../components/CategorySection";
 import ExpandableHeader from "../components/ExpandableHeader";
+import FilterSection from "../components/FilterSection";
 import { useInfiniteTheaters } from "../hooks/useInfiniteTheaters";
 import { Link } from "react-router-dom";
 
+interface FilterState {
+  where: string;
+  when: string;
+  how: string;
+}
+
 const Index = () => {
   const { categories, loadMoreForCategory } = useInfiniteTheaters();
+  const [filters, setFilters] = useState<FilterState>({
+    where: "",
+    when: "",
+    how: ""
+  });
+
+  const handleFilterChange = (newFilters: FilterState) => {
+    setFilters(newFilters);
+    console.log("Filters changed:", newFilters);
+    // Here you would typically filter the categories based on the filters
+  };
 
   return (
     <div className="min-h-screen bg-background">
@@ -31,6 +50,11 @@ const Index = () => {
               </Link>
             </div>
           </div>
+        </div>
+
+        {/* Filter Section */}
+        <div className="container mx-auto px-4">
+          <FilterSection onFilterChange={handleFilterChange} />
         </div>
         
         {categories.map(category => (
