@@ -1,11 +1,13 @@
+
 import { useState, useEffect } from "react";
 import CategorySection from "../components/CategorySection";
 import ExpandableHeader from "../components/ExpandableHeader";
 import Footer from "../components/Footer";
+import HeroSlider from "../components/HeroSlider";
 import { useShows } from "@/hooks/useShows";
 
 interface TheaterItem {
-  id: string; // Changed from number to string to match database
+  id: string;
   title: string;
   subtitle: string;
   image: string;
@@ -29,12 +31,12 @@ const Index = () => {
       
       // Transform shows data to match TheaterItem interface
       const transformedShows: TheaterItem[] = shows.map((show) => ({
-        id: show.id, // Now string matches string
+        id: show.id,
         title: show.title,
         subtitle: show.theaters?.name || "نمایش تئاتر",
         image: show.poster_url || `https://picsum.photos/id/${Math.floor(Math.random() * 100) + 1}/300/200`,
-        rating: "4.5", // You can calculate this from reviews later
-        shows: "1", // Number of showtimes - you can count this from showtimes
+        rating: "4.5",
+        shows: "1",
         description: show.description || "توضیحات نمایش در دسترس نیست",
         time: show.duration ? `${show.duration} دقیقه` : "120 دقیقه",
         price: show.price ? `${Number(show.price).toLocaleString()} تومان` : "قیمت در دسترس نیست",
@@ -85,21 +87,7 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-background">
       <ExpandableHeader />
-
-      {/* Hero Section */}
-      <div className="relative h-64 bg-gradient-to-r from-purple-900 to-blue-900">
-        <div className="absolute inset-0 bg-black/50"></div>
-        <img
-          src="https://images.unsplash.com/photo-1560421683-392183943910?w=1400&h=400&fit=crop"
-          alt="نمایش تئاتر"
-          className="w-full h-full object-cover"
-        />
-        <div className="absolute inset-0 flex items-center justify-center">
-          <h1 className="text-4xl font-bold text-white text-center">
-            بهترین نمایش‌های تئاتر ایران را اینجا پیدا کنید
-          </h1>
-        </div>
-      </div>
+      <HeroSlider />
 
       {/* Main Content */}
       <main className="py-8">

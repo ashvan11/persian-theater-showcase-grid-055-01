@@ -1,60 +1,46 @@
 
 import { useState, useEffect } from "react";
-
-const slides = [
-  {
-    id: 1,
-    title: "کتابخانه نیمه شب",
-    subtitle: "نمایش کتابخانه نیمه شب",
-    description: "نمایشی کتابخانه‌ای نیمه شب نام نوشته مت هیگ است که در آن قهرمان مرگ و زندگی اش میان مرگ و زندگی تعلیق یافته است.",
-    image: "https://images.unsplash.com/photo-1605810230434-7631ac76ec81?w=1200&h=600&fit=crop",
-    rating: "4.5",
-    showTime: "ساعت 19 در 3 سانس و 53'",
-    theater: "تماشاخانه ملک",
-    ticketButton: "خرید بلیت"
-  },
-  {
-    id: 2,
-    title: "ملکه‌ها",
-    subtitle: "نمایش ملکه‌ها",
-    description: "داستان زنانی قدرتمند که در طول تاریخ حکومت کرده‌اند و تأثیرات عمیقی بر جامعه گذاشته‌اند.",
-    image: "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=1200&h=600&fit=crop",
-    rating: "4.8",
-    showTime: "ساعت 20 در 2 سانس و 45'",
-    theater: "تئاتر شهر",
-    ticketButton: "خرید بلیت"
-  },
-  {
-    id: 3,
-    title: "شب آبی",
-    subtitle: "نمایش شب آبی",
-    description: "نمایشی شاعرانه و عمیق که داستان عشق و از دست دادن را در قالبی نمادین روایت می‌کند.",
-    image: "https://images.unsplash.com/photo-1470813740244-df37b8c1edcb?w=1200&h=600&fit=crop",
-    rating: "4.2",
-    showTime: "ساعت 18 در 4 سانس و 30'",
-    theater: "تالار رودکی",
-    ticketButton: "خرید بلیت"
-  }
-];
+import { useSliders } from "@/hooks/useSliders";
 
 const HeroSlider = () => {
+  const { data: slides, isLoading } = useSliders();
   const [currentSlide, setCurrentSlide] = useState(0);
 
   useEffect(() => {
+    if (!slides || slides.length === 0) return;
+    
     const timer = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % slides.length);
     }, 5000);
 
     return () => clearInterval(timer);
-  }, []);
+  }, [slides]);
 
   const nextSlide = () => {
+    if (!slides || slides.length === 0) return;
     setCurrentSlide((prev) => (prev + 1) % slides.length);
   };
 
   const prevSlide = () => {
+    if (!slides || slides.length === 0) return;
     setCurrentSlide((prev) => (prev - 1 + slides.length) % slides.length);
   };
+
+  if (isLoading) {
+    return (
+      <div className="h-[500px] md:h-[600px] bg-gray-900 flex items-center justify-center">
+        <div className="text-white text-xl">در حال بارگذاری...</div>
+      </div>
+    );
+  }
+
+  if (!slides || slides.length === 0) {
+    return (
+      <div className="h-[500px] md:h-[600px] bg-gray-900 flex items-center justify-center">
+        <div className="text-white text-xl">هیچ اسلایدی یافت نشد</div>
+      </div>
+    );
+  }
 
   return (
     <div className="relative h-[500px] md:h-[600px] overflow-hidden bg-black">
@@ -67,7 +53,7 @@ const HeroSlider = () => {
         >
           <div
             className="absolute inset-0 bg-cover bg-center"
-            style={{ backgroundImage: `url(${slide.image})` }}
+            style={{ backgroundImage: `url(${slide.image_url})` }}
           >
             <div className="absolute inset-0 bg-black/60"></div>
           </div>
@@ -79,30 +65,17 @@ const HeroSlider = () => {
                   <h1 className="text-4xl md:text-6xl font-bold text-white mb-4">
                     {slide.title}
                   </h1>
-                  <h2 className="text-xl md:text-2xl text-gold-400 mb-6">
-                    {slide.subtitle}
-                  </h2>
-                  <p className="text-lg text-white/90 mb-8 leading-relaxed">
-                    {slide.description}
-                  </p>
+                  {slide.description && (
+                    <p className="text-lg text-white/90 mb-8 leading-relaxed">
+                      {slide.description}
+                    </p>
+                  )}
                   
-                  <div className="flex flex-wrap items-center gap-4 mb-8 text-white/80">
-                    <div className="flex items-center gap-2">
-                      <span className="text-gold-400">★</span>
-                      <span>{slide.rating}</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <span>🕐</span>
-                      <span>{slide.showTime}</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <span>🎭</span>
-                      <span>{slide.theater}</span>
-                    </div>
-                  </div>
-                  
-                  <button className="bg-gold-600 hover:bg-gold-700 text-black font-semibold px-8 py-3 rounded-lg transition-colors duration-300">
-                    {slide.ticketButton}
+                  <button 
+                    onClick={() => window.location.href = slide.link_url || '/'}
+                    className="bg-gold-600 hover:bg-gold-700 text-black font-semibold px-8 py-3 rounded-lg transition-colors duration-300"
+                  >
+                    مشاهده بیشتر
                   </button>
                 </div>
               </div>

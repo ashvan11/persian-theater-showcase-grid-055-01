@@ -5,12 +5,15 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
+import { useCategories } from "@/hooks/useCategories";
 
 const CreateTheaterForm = () => {
   const { user } = useAuth();
   const { toast } = useToast();
+  const { data: categories } = useCategories();
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
@@ -20,11 +23,19 @@ const CreateTheaterForm = () => {
     capacity: "",
     contact_phone: "",
     contact_email: "",
+    image_url: "",
   });
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!user) return;
+    if (!user) {
+      toast({
+        title: "خطا",
+        description: "برای ایجاد تالار باید وارد شوید.",
+        variant: "destructive",
+      });
+      return;
+    }
 
     setLoading(true);
     try {
@@ -53,6 +64,7 @@ const CreateTheaterForm = () => {
           capacity: "",
           contact_phone: "",
           contact_email: "",
+          image_url: "",
         });
       }
     } catch (error) {
@@ -104,12 +116,21 @@ const CreateTheaterForm = () => {
             </div>
             <div>
               <label className="block text-sm font-medium mb-2">شهر</label>
-              <Input
+              <Select
                 value={formData.city}
-                onChange={(e) => setFormData(prev => ({ ...prev, city: e.target.value }))}
-                placeholder="شهر"
-                required
-              />
+                onValueChange={(value) => setFormData(prev => ({ ...prev, city: value }))}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="شهر را انتخاب کنید" />
+                </SelectTrigger>
+                <SelectContent>
+                  {categories?.cities?.map((city) => (
+                    <SelectItem key={city} value={city}>
+                      {city}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
           </div>
 
@@ -122,6 +143,16 @@ const CreateTheaterForm = () => {
               placeholder="ظرفیت تالار"
               required
               min="1"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium mb-2">تصویر تالار</label>
+            <Input
+              type="url"
+              value={formData.image_url}
+              onChange={(e) => setFormData(prev => ({ ...prev, image_url: e.target.value }))}
+              placeholder="لینک تصویر تالار"
             />
           </div>
 

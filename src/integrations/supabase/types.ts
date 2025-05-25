@@ -333,6 +333,42 @@ export type Database = {
           },
         ]
       }
+      sliders: {
+        Row: {
+          created_at: string
+          description: string | null
+          display_order: number | null
+          id: string
+          image_url: string | null
+          is_active: boolean | null
+          link_url: string | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          display_order?: number | null
+          id?: string
+          image_url?: string | null
+          is_active?: boolean | null
+          link_url?: string | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          display_order?: number | null
+          id?: string
+          image_url?: string | null
+          is_active?: boolean | null
+          link_url?: string | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       theaters: {
         Row: {
           address: string
