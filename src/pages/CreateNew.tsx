@@ -5,7 +5,7 @@ import { Card, CardContent, CardDescription, CardTitle } from "@/components/ui/c
 import { Button } from "@/components/ui/button";
 import ExpandableHeader from "@/components/ExpandableHeader";
 import Footer from "@/components/Footer";
-import { masks, musical-note, clock, fingerprint, computer, fork-and-spoon, rectangle, envelope } from "lucide-react";
+import { Masks, Music, Clock, Fingerprint, Computer, Utensils, Square, Mail } from "lucide-react";
 
 const CreateNew = () => {
   const [activeTab, setActiveTab] = useState("create");
@@ -14,19 +14,19 @@ const CreateNew = () => {
     {
       title: "نمایش",
       description: "یک اجرای نمایش، نمایش موزیکال، محیطی ...",
-      icon: masks,
+      icon: Masks,
       category: "برگه"
     },
     {
       title: "کنسرت", 
       description: "یک اجرای موسیقی",
-      icon: musical-note,
+      icon: Music,
       category: "برگه"
     },
     {
       title: "دیگر انواع",
       description: "یک برگه رویداد یا محصول از هر نوع دیگری...",
-      icon: clock,
+      icon: Clock,
       category: "برگه"
     }
   ];
@@ -35,19 +35,19 @@ const CreateNew = () => {
     {
       title: "شخصیت حقیقی",
       description: "یک هنرمند، فعال پشت صحنه، نویسنده ...",
-      icon: fingerprint,
+      icon: Fingerprint,
       category: "کانال"
     },
     {
       title: "سازمان یا برند",
       description: "یک گروه هنری، برند، شرکت، سالن ...",
-      icon: computer,
+      icon: Computer,
       category: "کانال"
     },
     {
       title: "محل غذا و نوشیدنی",
       description: "یک محل خوراک و نوشیدنی، مانند کافه و رستوران",
-      icon: fork-and-spoon,
+      icon: Utensils,
       category: "کانال"
     }
   ];
@@ -56,13 +56,13 @@ const CreateNew = () => {
     {
       title: "بنر",
       description: "بنر تبلیغاتی برای بیشتر دیده شدن",
-      icon: rectangle,
+      icon: Square,
       category: "تبلیغ"
     },
     {
       title: "پیامک",
       description: "فرستادن پیامک هدفمند برای آگاهی‌رسانی بیشتر",
-      icon: envelope,
+      icon: Mail,
       category: "تبلیغ"
     }
   ];
