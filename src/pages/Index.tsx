@@ -1,111 +1,165 @@
-
-import { useState } from "react";
-import HeroSlider from "../components/HeroSlider";
+import { useState, useEffect, useCallback } from "react";
 import CategorySection from "../components/CategorySection";
 import ExpandableHeader from "../components/ExpandableHeader";
-import FilterSection from "../components/FilterSection";
-import { useInfiniteTheaters } from "../hooks/useInfiniteTheaters";
-import { Link } from "react-router-dom";
+import Footer from "../components/Footer";
 
-interface FilterState {
-  where: string;
-  when: string;
-  how: string;
+interface TheaterItem {
+  id: number;
+  title: string;
+  subtitle: string;
+  image: string;
+  rating: string;
+  shows: string;
+  description: string;
+  time: string;
+  price: string;
+  buttonText: string;
 }
 
 const Index = () => {
-  const { categories, loadMoreForCategory } = useInfiniteTheaters();
-  const [filters, setFilters] = useState<FilterState>({
-    where: "",
-    when: "",
-    how: ""
-  });
+  const [classicTheaters, setClassicTheaters] = useState<TheaterItem[]>([]);
+  const [modernTheaters, setModernTheaters] = useState<TheaterItem[]>([]);
+  const [childTheaters, setChildTheaters] = useState<TheaterItem[]>([]);
+  const [classicPage, setClassicPage] = useState(1);
+  const [modernPage, setModernPage] = useState(1);
+  const [childPage, setChildPage] = useState(1);
+  const [hasMoreClassic, setHasMoreClassic] = useState(true);
+  const [hasMoreModern, setHasMoreModern] = useState(true);
+  const [hasMoreChild, setHasMoreChild] = useState(true);
+  const [loadingClassic, setLoadingClassic] = useState(false);
+  const [loadingModern, setLoadingModern] = useState(false);
+  const [loadingChild, setLoadingChild] = useState(false);
 
-  const handleFilterChange = (newFilters: FilterState) => {
-    setFilters(newFilters);
-    console.log("Filters changed:", newFilters);
-    // Here you would typically filter the categories based on the filters
+  const itemsPerPage = 6;
+
+  useEffect(() => {
+    loadClassicTheaters();
+    loadModernTheaters();
+    loadChildTheaters();
+  }, []);
+
+  const generateTheaterData = (category: string, page: number): TheaterItem[] => {
+    const startIndex = (page - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    const data: TheaterItem[] = [];
+
+    for (let i = startIndex; i < endIndex; i++) {
+      const id = i + 1;
+      data.push({
+        id: id,
+        title: `${category} Show ${id}`,
+        subtitle: "توضیحات کوتاه",
+        image: `https://picsum.photos/id/${id + 100}/300/200`,
+        rating: `${(Math.random() * 5).toFixed(1)}`,
+        shows: `${Math.floor(Math.random() * 30)}`,
+        description: "این یک توضیح تستی است",
+        time: `${Math.floor(Math.random() * 12) + 10}:00`,
+        price: `${Math.floor(Math.random() * 50) + 50} هزار تومان`,
+        buttonText: "خرید بلیت",
+      });
+    }
+
+    return data;
+  };
+
+  const loadClassicTheaters = async () => {
+    if (loadingClassic) return;
+    setLoadingClassic(true);
+    
+    const newData = generateTheaterData("نمایش‌های کلاسیک", classicPage);
+    
+    setClassicTheaters((prevTheaters) => [...prevTheaters, ...newData]);
+    setHasMoreClassic(newData.length === itemsPerPage);
+    setLoadingClassic(false);
+  };
+
+  const loadModernTheaters = async () => {
+    if (loadingModern) return;
+    setLoadingModern(true);
+
+    const newData = generateTheaterData("نمایش‌های مدرن", modernPage);
+
+    setModernTheaters((prevTheaters) => [...prevTheaters, ...newData]);
+    setHasMoreModern(newData.length === itemsPerPage);
+    setLoadingModern(false);
+  };
+
+  const loadChildTheaters = async () => {
+    if (loadingChild) return;
+    setLoadingChild(true);
+
+    const newData = generateTheaterData("نمایش‌های کودک", childPage);
+
+    setChildTheaters((prevTheaters) => [...prevTheaters, ...newData]);
+    setHasMoreChild(newData.length === itemsPerPage);
+    setLoadingChild(false);
+  };
+
+  const onLoadMoreClassic = () => {
+    if (hasMoreClassic && !loadingClassic) {
+      setClassicPage((prevPage) => prevPage + 1);
+      loadClassicTheaters();
+    }
+  };
+
+  const onLoadMoreModern = () => {
+    if (hasMoreModern && !loadingModern) {
+      setModernPage((prevPage) => prevPage + 1);
+      loadModernTheaters();
+    }
+  };
+
+  const onLoadMoreChild = () => {
+    if (hasMoreChild && !loadingChild) {
+      setChildPage((prevPage) => prevPage + 1);
+      loadChildTheaters();
+    }
   };
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Expandable Header */}
       <ExpandableHeader />
 
-      {/* Hero Slider */}
-      <HeroSlider />
-
-      {/* Filter Section - Between Slider and Categories */}
-      <div className="container mx-auto px-4 py-8">
-        <FilterSection onFilterChange={handleFilterChange} />
+      {/* Hero Section */}
+      <div className="relative h-64 bg-gradient-to-r from-purple-900 to-blue-900">
+        <div className="absolute inset-0 bg-black/50"></div>
+        <img
+          src="https://images.unsplash.com/photo-1560421683-392183943910?w=1400&h=400&fit=crop"
+          alt="نمایش تئاتر"
+          className="w-full h-full object-cover"
+        />
+        <div className="absolute inset-0 flex items-center justify-center">
+          <h1 className="text-4xl font-bold text-white text-center">
+            بهترین نمایش‌های تئاتر ایران را اینجا پیدا کنید
+          </h1>
+        </div>
       </div>
 
-      {/* Categories with Infinity Scroll */}
-      <div className="py-8">
-        <div className="container mx-auto px-4 mb-12">
-          <div className="text-center">
-            <h2 className="text-3xl font-bold text-foreground mb-4">دسته‌بندی نمایش‌ها</h2>
-            <p className="text-foreground/70 text-lg">انواع نمایش‌های تئاتری را کشف کنید</p>
-            <div className="mt-4">
-              <Link 
-                to="/show/1" 
-                className="inline-block px-6 py-3 bg-gold-600 text-background rounded-lg hover:bg-gold-700 transition-colors"
-              >
-                مشاهده نمونه صفحه جزئیات نمایش
-              </Link>
-            </div>
-          </div>
-        </div>
-        
-        {categories.map(category => (
-          <CategorySection
-            key={category.name}
-            categoryName={category.name}
-            theaters={category.theaters}
-            onLoadMore={() => loadMoreForCategory(category.name)}
-            hasMore={category.hasMore}
-            loading={category.loading}
-          />
-        ))}
-      </div>
-
-      {/* Footer */}
-      <footer className="bg-card border-t border-border/40 py-12">
-        <div className="container mx-auto px-4">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-            <div>
-              <h3 className="text-gold-500 font-bold text-lg mb-4">تئاتر نما</h3>
-              <p className="text-foreground/70">مرجع کامل اطلاعات تئاترهای ایران</p>
-            </div>
-            <div>
-              <h4 className="font-semibold mb-4">لینک‌های مفید</h4>
-              <ul className="space-y-2 text-foreground/70">
-                <li><a href="#" className="hover:text-gold-500 transition-colors">درباره ما</a></li>
-                <li><a href="#" className="hover:text-gold-500 transition-colors">تماس با ما</a></li>
-                <li><a href="#" className="hover:text-gold-500 transition-colors">قوانین</a></li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="font-semibold mb-4">دسته‌بندی‌ها</h4>
-              <ul className="space-y-2 text-foreground/70">
-                <li><a href="#" className="hover:text-gold-500 transition-colors">نمایش کلاسیک</a></li>
-                <li><a href="#" className="hover:text-gold-500 transition-colors">نمایش مدرن</a></li>
-                <li><a href="#" className="hover:text-gold-500 transition-colors">نمایش کودک</a></li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="font-semibold mb-4">شبکه‌های اجتماعی</h4>
-              <div className="flex gap-4">
-                <a href="#" className="text-foreground/70 hover:text-gold-500 transition-colors">اینستاگرام</a>
-                <a href="#" className="text-foreground/70 hover:text-gold-500 transition-colors">تلگرام</a>
-              </div>
-            </div>
-          </div>
-          <div className="border-t border-border/40 mt-8 pt-8 text-center text-foreground/50">
-            <p>&copy; 1403 تئاتر نما. تمامی حقوق محفوظ است.</p>
-          </div>
-        </div>
-      </footer>
+      {/* Main Content */}
+      <main className="py-8">
+        <CategorySection
+          categoryName="نمایش‌های کلاسیک"
+          theaters={classicTheaters}
+          onLoadMore={onLoadMoreClassic}
+          hasMore={hasMoreClassic}
+          loading={loadingClassic}
+        />
+        <CategorySection
+          categoryName="نمایش‌های مدرن"
+          theaters={modernTheaters}
+          onLoadMore={onLoadMoreModern}
+          hasMore={hasMoreModern}
+          loading={loadingModern}
+        />
+        <CategorySection
+          categoryName="نمایش‌های کودک"
+          theaters={childTheaters}
+          onLoadMore={onLoadMoreChild}
+          hasMore={hasMoreChild}
+          loading={loadingChild}
+        />
+      </main>
+      <Footer />
     </div>
   );
 };

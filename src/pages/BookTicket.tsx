@@ -1,8 +1,8 @@
-
 import { useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import ExpandableHeader from "../components/ExpandableHeader";
 import { Calendar, Clock, MapPin } from "lucide-react";
+import SeatMap from "../components/SeatMap";
 
 interface Showtime {
   id: string;
@@ -24,7 +24,7 @@ interface Seat {
 const BookTicket = () => {
   const { id } = useParams();
   const [selectedShowtime, setSelectedShowtime] = useState<string>("");
-  const [selectedSeats, setSelectedSeats] = useState<Seat[]>([]);
+  const [selectedSeats, setSelectedSeats] = useState<string[]>([]);
   const [currentStep, setCurrentStep] = useState(1);
 
   const showtimes: Showtime[] = [
@@ -34,51 +34,22 @@ const BookTicket = () => {
     { id: "4", day: "سه‌شنبه", date: "18 دی", time: "19:00", status: "موجود", remaining: 28 },
   ];
 
-  const generateSeats = (): Seat[] => {
-    const seats: Seat[] = [];
-    for (let row = 1; row <= 6; row++) {
-      for (let seatNum = 1; seatNum <= 16; seatNum++) {
-        const random = Math.random();
-        let status: Seat['status'] = 'available';
-        if (random < 0.1) status = 'purchased';
-        else if (random < 0.15) status = 'waiting';
-        else if (random < 0.18) status = 'unavailable';
-        
-        seats.push({
-          id: `${row}-${seatNum}`,
-          row,
-          number: seatNum,
-          status
-        });
-      }
-    }
-    return seats;
+  // Generate realistic seat data
+  const generateSeatData = () => {
+    const unavailable = ['1-1', '1-16', '6-8', '6-9'];
+    const purchased = ['2-5', '2-6', '3-10', '3-11', '4-7', '4-8', '5-12'];
+    const waiting = ['2-7', '3-12', '4-9'];
+    
+    return { unavailable, purchased, waiting };
   };
 
-  const [seats] = useState<Seat[]>(generateSeats);
+  const { unavailable, purchased, waiting } = generateSeatData();
 
-  const handleSeatClick = (seat: Seat) => {
-    if (seat.status === 'available') {
-      setSelectedSeats(prev => [...prev, { ...seat, status: 'selected' }]);
-    } else if (seat.status === 'selected') {
-      setSelectedSeats(prev => prev.filter(s => s.id !== seat.id));
-    }
-  };
-
-  const getSeatStatus = (seat: Seat) => {
-    const isSelected = selectedSeats.some(s => s.id === seat.id);
-    if (isSelected) return 'selected';
-    return seat.status;
-  };
-
-  const getSeatColor = (status: string) => {
-    switch (status) {
-      case 'available': return 'bg-blue-500 hover:bg-blue-600';
-      case 'selected': return 'bg-red-500';
-      case 'purchased': return 'bg-gray-800';
-      case 'waiting': return 'bg-orange-500';
-      case 'unavailable': return 'bg-gray-400';
-      default: return 'bg-blue-500';
+  const handleSeatSelect = (seatId: string, isSelected: boolean) => {
+    if (isSelected) {
+      setSelectedSeats(prev => [...prev, seatId]);
+    } else {
+      setSelectedSeats(prev => prev.filter(s => s !== seatId));
     }
   };
 
@@ -204,7 +175,7 @@ const BookTicket = () => {
               </div>
             </div>
 
-            {/* Section 2: Seat Selection */}
+            {/* Section 2: Seat Selection - Updated */}
             {selectedShowtime && (
               <div className="bg-card rounded-lg p-6">
                 <div className="flex items-center gap-2 mb-4">
@@ -216,66 +187,15 @@ const BookTicket = () => {
                   سانس انتخاب شده: {showtimes.find(s => s.id === selectedShowtime)?.day} {showtimes.find(s => s.id === selectedShowtime)?.date} - {showtimes.find(s => s.id === selectedShowtime)?.time}
                 </div>
 
-                {/* Stage */}
-                <div className="text-center mb-6">
-                  <div className="bg-gray-200 rounded-lg py-2 px-4 inline-block">
-                    <span className="text-sm font-semibold">صحنه نمایش</span>
-                  </div>
-                </div>
-
-                {/* Seat Map */}
-                <div className="mb-6">
-                  <div className="grid grid-cols-17 gap-1 max-w-4xl mx-auto">
-                    <div></div>
-                    {Array.from({length: 16}, (_, i) => (
-                      <div key={i} className="text-center text-xs text-foreground/60 p-1">{i + 1}</div>
-                    ))}
-                    
-                    {Array.from({length: 6}, (_, rowIndex) => {
-                      const rowNumber = rowIndex + 1;
-                      return (
-                        <>
-                          <div key={`row-${rowNumber}`} className="text-center text-xs text-foreground/60 p-1">{rowNumber}</div>
-                          {seats.filter(seat => seat.row === rowNumber).map((seat) => {
-                            const status = getSeatStatus(seat);
-                            return (
-                              <button
-                                key={seat.id}
-                                onClick={() => handleSeatClick(seat)}
-                                disabled={seat.status === 'purchased' || seat.status === 'waiting' || seat.status === 'unavailable'}
-                                className={`w-6 h-6 rounded ${getSeatColor(status)} transition-colors disabled:cursor-not-allowed`}
-                              />
-                            );
-                          })}
-                        </>
-                      );
-                    })}
-                  </div>
-                </div>
-
-                {/* Seat Legend */}
-                <div className="grid grid-cols-2 md:grid-cols-5 gap-4 text-sm">
-                  <div className="flex items-center gap-2">
-                    <div className="w-4 h-4 rounded bg-blue-500"></div>
-                    <span>آزاد</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <div className="w-4 h-4 rounded bg-red-500"></div>
-                    <span>انتخاب شما</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <div className="w-4 h-4 rounded bg-gray-800"></div>
-                    <span>خریداری شده</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <div className="w-4 h-4 rounded bg-orange-500"></div>
-                    <span>در انتظار پرداخت</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <div className="w-4 h-4 rounded bg-gray-400"></div>
-                    <span>غیرقابل خرید</span>
-                  </div>
-                </div>
+                <SeatMap
+                  rows={6}
+                  seatsPerRow={16}
+                  onSeatSelect={handleSeatSelect}
+                  selectedSeats={selectedSeats}
+                  unavailableSeats={unavailable}
+                  purchasedSeats={purchased}
+                  waitingSeats={waiting}
+                />
               </div>
             )}
 
@@ -300,7 +220,7 @@ const BookTicket = () => {
             )}
           </div>
 
-          {/* Order Summary Sidebar */}
+          {/* Order Summary Sidebar - Updated */}
           <div className="lg:col-span-1">
             <div className="bg-card rounded-lg p-6 sticky top-24">
               <h3 className="text-lg font-bold mb-4">خلاصه سفارش</h3>
@@ -312,7 +232,7 @@ const BookTicket = () => {
                 </div>
                 {selectedSeats.length > 0 && (
                   <div className="text-sm text-foreground/60">
-                    صندلی‌های انتخابی: {selectedSeats.map(seat => `${seat.row}-${seat.number}`).join(', ')}
+                    صندلی‌های انتخابی: {selectedSeats.join(', ')}
                   </div>
                 )}
                 <div className="border-t pt-3">
