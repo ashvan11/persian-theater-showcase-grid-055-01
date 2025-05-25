@@ -5,7 +5,7 @@ import { Card, CardContent, CardDescription, CardTitle } from "@/components/ui/c
 import { Button } from "@/components/ui/button";
 import ExpandableHeader from "@/components/ExpandableHeader";
 import Footer from "@/components/Footer";
-import { Masks, Music, Clock, Fingerprint, Computer, Utensils, Square, Mail } from "lucide-react";
+import { Theater, Music, Clock, Fingerprint, Building, Utensils, Square, Mail } from "lucide-react";
 
 const CreateNew = () => {
   const [activeTab, setActiveTab] = useState("create");
@@ -14,7 +14,7 @@ const CreateNew = () => {
     {
       title: "نمایش",
       description: "یک اجرای نمایش، نمایش موزیکال، محیطی ...",
-      icon: Masks,
+      icon: Theater,
       category: "برگه"
     },
     {
@@ -41,7 +41,7 @@ const CreateNew = () => {
     {
       title: "سازمان یا برند",
       description: "یک گروه هنری، برند، شرکت، سالن ...",
-      icon: Computer,
+      icon: Building,
       category: "کانال"
     },
     {

@@ -1,6 +1,7 @@
 
 import { MapPin, Phone, Mail, Instagram, MessageCircle } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
+import { Link } from "react-router-dom";
 
 const Footer = () => {
   const stations = [
@@ -34,8 +35,9 @@ const Footer = () => {
           <div>
             <h3 className="text-lg font-bold mb-4 text-gold-500">دسترسی سریع</h3>
             <ul className="space-y-2 text-sm">
-              <li><a href="/" className="text-foreground/80 hover:text-gold-500 transition-colors">صفحه اصلی</a></li>
-              <li><a href="/wall" className="text-foreground/80 hover:text-gold-500 transition-colors">دیوار گفتگو</a></li>
+              <li><Link to="/" className="text-foreground/80 hover:text-gold-500 transition-colors">صفحه اصلی</Link></li>
+              <li><Link to="/wall" className="text-foreground/80 hover:text-gold-500 transition-colors">دیوار گفتگو</Link></li>
+              <li><Link to="/create" className="text-foreground/80 hover:text-gold-500 transition-colors">ایجاد جدید</Link></li>
               <li><a href="#" className="text-foreground/80 hover:text-gold-500 transition-colors">تالارهای نمایش</a></li>
               <li><a href="#" className="text-foreground/80 hover:text-gold-500 transition-colors">هنرمندان</a></li>
               <li><a href="#" className="text-foreground/80 hover:text-gold-500 transition-colors">تماس با ما</a></li>

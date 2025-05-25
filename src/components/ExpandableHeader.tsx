@@ -24,7 +24,7 @@ const ExpandableHeader = () => {
               <a href="#" className="text-foreground/80 hover:text-gold-500 transition-colors">نمایش‌ها</a>
               <a href="#" className="text-foreground/80 hover:text-gold-500 transition-colors">تالارها</a>
               <Link to="/wall" className="text-foreground/80 hover:text-gold-500 transition-colors">دیوار بحث</Link>
-              <Link to="/create" className="text-foreground/80 hover:text-gold-500 transition-colors">ایجاد آیتم</Link>
+              <Link to="/create" className="text-foreground/80 hover:text-gold-500 transition-colors">ایجاد جدید</Link>
             </nav>
           </div>
           
@@ -98,7 +98,7 @@ const ExpandableHeader = () => {
                   <li><a href="#" className="text-foreground/70 hover:text-gold-500 transition-colors block py-1">تخفیف‌ها</a></li>
                   <li><a href="#" className="text-foreground/70 hover:text-gold-500 transition-colors block py-1">اخبار تئاتر</a></li>
                   <li><Link to="/wall" className="text-foreground/70 hover:text-gold-500 transition-colors block py-1">دیوار بحث</Link></li>
-                  <li><Link to="/create" className="text-foreground/70 hover:text-gold-500 transition-colors block py-1">ایجاد آیتم جدید</Link></li>
+                  <li><Link to="/create" className="text-foreground/70 hover:text-gold-500 transition-colors block py-1">ایجاد جدید</Link></li>
                 </ul>
               </div>
             </div>
